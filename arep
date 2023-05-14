@@ -1,0 +1,77 @@
+/**
+ * Solves a Sudoku board
+ * @param {Array} board - The Sudoku board to solve
+ * @returns {Array} - The solved Sudoku board
+ */
+function solveSudoku(board) {
+    // Check for empty cell
+    let row = -1;
+    let col = -1;
+    let isEmpty = true;
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            if (board[i][j] === 0) {
+                row = i;
+                col = j;
+                isEmpty = false;
+                break;
+            }
+        }
+        if (!isEmpty) {
+            break;
+        }
+    }
+
+    // If board is full, return board
+    if (isEmpty) {
+        return board;
+    }
+
+    // Try numbers 1-9
+    for (let num = 1; num <= 9; num++) {
+        if (isSafe(board, row, col, num)) {
+            board[row][col] = num;
+            if (solveSudoku(board)) {
+                return board;
+            }
+            else {
+                board[row][col] = 0;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ * Checks if a number can be placed in a cell
+ * @param {Array} board - The Sudoku board
+ * @param {Number} row - The row of the cell
+ * @param {Number} col - The column of the cell
+ * @param {Number} num - The number to check
+ * @returns {Boolean} - True if the number can be placed in the cell, false otherwise
+ */
+function isSafe(board, row, col, num) {
+    // Check row
+    for (let i = 0; i < 9; i++) {
+        if (board[row][i] === num) {
+            return false;
+        }
+    }
+
+    // Check column
+    for (let i = 0; i < 9; i++) {
+        if (board[i][col] === num) {
+            return false;
+        }
+    }
+
+    // Check 3x3 box
+    let boxRow = Math.floor(row / 3) * 3;
+    let boxCol = Math.floor(col / 3) * 3;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board[boxRow + i][boxCol + j] === num) {
+                return false;
+            }
+        }
+    }
